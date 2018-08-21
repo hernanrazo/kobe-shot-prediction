@@ -13,12 +13,21 @@ graph_folder_path = '/Users/hernanrazo/pythonProjects/kobe-shot-prediction/graph
 print(df.apply(lambda x: sum(x.isnull()), axis = 0))
 print(' ')
 
+#start off by cleaning the data 
+
+#remove the obviously useless variables
+df = df.drop(['game_id'], axis = 1)
+df = df.drop(['lat'], axis = 1)
+df = df.drop(['lon'], axis = 1)
+df = df.drop(['team_name'], axis = 1)
+df = df.drop(['matchup'], axis = 1)
+df = df.drop(['shot_id'], axis = 1)
 
 #make frequency table of all action types
 print(df.groupby('action_type').size())
 print(' ')
 
-#take the 20 least popular action types and combine them into one category of 'Other'
+#take the 20 least popular action types and combine them into one category called 'Other'
 rare_action_types = df['action_type'].value_counts().sort_values().index.values[:20]
 df.loc[df['action_type'].isin(rare_action_types), 'action_type'] = 'Other'
 
@@ -39,6 +48,32 @@ action_type_key = {'Alley Oop Dunk Shot':0, 'Alley Oop Layup shot':2,
 
 df['action_type'] = df['action_type'].map(action_type_key).astype(int)
 
+
+#do the same to the combine_shot_type variable
+combined_shot_type_key = {'Bank Shot':0, 'Dunk':1, 'Hook Shot':2, 'Jump Shot':3,
+'Layup':4, 'Tip Shot':5}
+
+df['combined_shot_type'] = df['combined_shot_type'].map(combined_shot_type_key).astype(int)
+
+#combine the seconds_remaining and minutes_remaining variables by converting minutes
+#to seconds and then adding them
+df['total_sec_left'] = df['minutes_remaining'] * 60 + df['seconds_remaining'] 
+
+#drop the original variables
+df.drop(['minutes_remaining'], axis = 1)
+df.drop(['seconds_remaining'], axis = 1)
+
+#switch the shot_type variable into numeric
+shot_type_key = {'2PT Field Goal':0, '3PT Field Goal':1}
+df['shot_type'] = df['shot_type'].map(shot_type_key).astype(int)
+
+#convert shot_zone_key to numeric 
+shot_zone_key = {'Back Court(BC)':0, 'Center(C)':1, 'Left Side Center(LC)':2,
+'Left Side(L)':3, 'Right Side Center(RC)':4, 'Right Side(R)':5}
+
+df['shot_zone_area'] = df['shot_zone_area'].map(shot_type_key).astype(int)
+
+print(df.groupby('shot_zone_area').size())
 
 #print a countplot for each category in the action_type variable
 action_type_countplot = plt.figure()
