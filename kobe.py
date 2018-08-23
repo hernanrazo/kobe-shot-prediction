@@ -65,19 +65,28 @@ df.drop(['seconds_remaining'], axis = 1)
 
 #switch the shot_type variable into numeric
 shot_type_key = {'2PT Field Goal':0, '3PT Field Goal':1}
+
 df['shot_type'] = df['shot_type'].map(shot_type_key).astype(int)
 
 #convert shot_zone_key to numeric 
-shot_zone_key = {'Back Court(BC)':0, 'Center(C)':1, 'Left Side Center(LC)':2,
+shot_zone_area_key = {'Back Court(BC)':0, 'Center(C)':1, 'Left Side Center(LC)':2,
 'Left Side(L)':3, 'Right Side Center(RC)':4, 'Right Side(R)':5}
 
-df['shot_zone_area'] = df['shot_zone_area'].map(shot_type_key).astype(int)
+df['shot_zone_area'] = df['shot_zone_area'].map(shot_zone_area_key).astype(int)
 
-print(df.groupby('shot_zone_area').size())
+#convert the shot_zone_basic variable into numeric
+shot_zone_basic_key = {'Above the Break 3':0, 'Backcourt':1, 'In The Paint (Non-RA)':2,
+'Left Corner 3':3, 'Mid-Range':4, 'Restricted Area':5, 'Right Corner 3':6}
+
+df['shot_zone_basic'] = df['shot_zone_basic'].map(shot_zone_basic_key).astype(int)
+
+
 
 #print a countplot for each category in the action_type variable
 action_type_countplot = plt.figure()
 plt.title('Occurance of Each Action Type')
 sns.countplot(x = 'action_type', data = df)
 action_type_countplot.savefig(graph_folder_path + 'action_type_barplot.png')
+
+#print(df.to_string())
 
