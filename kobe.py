@@ -55,14 +55,6 @@ combined_shot_type_key = {'Bank Shot':0, 'Dunk':1, 'Hook Shot':2, 'Jump Shot':3,
 
 df['combined_shot_type'] = df['combined_shot_type'].map(combined_shot_type_key).astype(int)
 
-#combine the seconds_remaining and minutes_remaining variables by converting minutes
-#to seconds and then adding them
-df['total_sec_left'] = df['minutes_remaining'] * 60 + df['seconds_remaining'] 
-
-#drop the original variables
-df.drop(['minutes_remaining'], axis = 1)
-df.drop(['seconds_remaining'], axis = 1)
-
 #switch the shot_type variable into numeric
 shot_type_key = {'2PT Field Goal':0, '3PT Field Goal':1}
 
@@ -80,7 +72,37 @@ shot_zone_basic_key = {'Above the Break 3':0, 'Backcourt':1, 'In The Paint (Non-
 
 df['shot_zone_basic'] = df['shot_zone_basic'].map(shot_zone_basic_key).astype(int)
 
+#turn shot_zone_range into numeric
+shot_zone_range_key = {'16-24 ft.':0, '24+ ft.':1, '8-16 ft.':2, 'Back Court Shot':3,
+'Less Than 8 ft.':4}
 
+df['shot_zone_range'] = df['shot_zone_range'].map(shot_zone_range_key).astype(int)
+
+#combine the seconds_remaining and minutes_remaining variables by converting minutes
+#to seconds and then adding them
+df['total_sec_left'] = df['minutes_remaining'] * 60 + df['seconds_remaining'] 
+
+#drop the original variables
+df.drop(['minutes_remaining'], axis = 1)
+df.drop(['seconds_remaining'], axis = 1)
+
+#convert the game_date variable into a dateframe and then seperate it into 
+#2 new variables of year and month
+
+df['game_date'] = pd.to_datetime(df['game_date'])
+df['game_year'] = df['game_date'].dt.year
+df['game_month'] = df['game_date'].dt.month
+
+#drop original game_date variable
+df = df.drop(['game_date'], axis = 1)
+
+df['game_year'] = df['game_year'].astype(int)
+df['game_month'] = df['game_month'].astype(int)
+
+print(df['game_year'].describe())
+print(' ')
+print(df['game_month'].describe())
+print(' ')
 
 #print a countplot for each category in the action_type variable
 action_type_countplot = plt.figure()
