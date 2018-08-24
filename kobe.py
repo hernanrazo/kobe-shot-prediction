@@ -23,6 +23,7 @@ df = df.drop(['team_name'], axis = 1)
 df = df.drop(['matchup'], axis = 1)
 df = df.drop(['shot_id'], axis = 1)
 
+'''
 #make frequency table of all action types
 print(df.groupby('action_type').size())
 print(' ')
@@ -78,6 +79,8 @@ shot_zone_range_key = {'16-24 ft.':0, '24+ ft.':1, '8-16 ft.':2, 'Back Court Sho
 
 df['shot_zone_range'] = df['shot_zone_range'].map(shot_zone_range_key).astype(int)
 
+
+'''
 #combine the seconds_remaining and minutes_remaining variables by converting minutes
 #to seconds and then adding them
 df['total_sec_left'] = df['minutes_remaining'] * 60 + df['seconds_remaining'] 
@@ -88,7 +91,6 @@ df.drop(['seconds_remaining'], axis = 1)
 
 #convert the game_date variable into a dateframe and then seperate it into 
 #2 new variables of year and month
-
 df['game_date'] = pd.to_datetime(df['game_date'])
 df['game_year'] = df['game_date'].dt.year
 df['game_month'] = df['game_date'].dt.month
@@ -96,13 +98,26 @@ df['game_month'] = df['game_date'].dt.month
 #drop original game_date variable
 df = df.drop(['game_date'], axis = 1)
 
-df['game_year'] = df['game_year'].astype(int)
-df['game_month'] = df['game_month'].astype(int)
+#what the fuck??????
+categorical_data = ['action_type', 'combined_shot_type', 'period', 'season', 
+'shot_type', 'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'game_year',
+'game_date', 'opponent']
 
-print(df['game_year'].describe())
-print(' ')
-print(df['game_month'].describe())
-print(' ')
+for i in categorical_data:
+	dummie_data = pd.get_dummies(df[i])
+	dummie_data = dummie_data.add_prefix('()#'.format(i))
+	df.drop(i, axis = 1, inplace = True)
+	df = df.join(dummie_data)
+
+
+print(df.to_string())
+
+
+
+
+
+
+
 
 #print a countplot for each category in the action_type variable
 action_type_countplot = plt.figure()
