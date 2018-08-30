@@ -23,7 +23,6 @@ df = df.drop(['team_name'], axis = 1)
 df = df.drop(['matchup'], axis = 1)
 df = df.drop(['shot_id'], axis = 1)
 
-'''
 #make frequency table of all action types
 print(df.groupby('action_type').size())
 print(' ')
@@ -80,7 +79,7 @@ shot_zone_range_key = {'16-24 ft.':0, '24+ ft.':1, '8-16 ft.':2, 'Back Court Sho
 df['shot_zone_range'] = df['shot_zone_range'].map(shot_zone_range_key).astype(int)
 
 
-'''
+
 #combine the seconds_remaining and minutes_remaining variables by converting minutes
 #to seconds and then adding them
 df['total_sec_left'] = df['minutes_remaining'] * 60 + df['seconds_remaining'] 
@@ -98,22 +97,7 @@ df['game_month'] = df['game_date'].dt.month
 #drop original game_date variable
 df = df.drop(['game_date'], axis = 1)
 
-#what the fuck??????
-categorical_data = ['action_type', 'combined_shot_type', 'period', 'season', 
-'shot_type', 'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'game_year',
-'game_date', 'opponent']
-
-
-
-
-print(df.to_string())
-
-
-
-
-
-
-
+#start visualizing data
 
 #print a countplot for each category in the action_type variable
 action_type_countplot = plt.figure()
@@ -121,5 +105,15 @@ plt.title('Occurance of Each Action Type')
 sns.countplot(x = 'action_type', data = df)
 action_type_countplot.savefig(graph_folder_path + 'action_type_barplot.png')
 
-#print(df.to_string())
+#ignore this============================
+shot_coordinate_plot = plt.figure()
+plt.title('Shot Plot')
+sns.scatter(x = 'loc_x', y ='loc_y')
+shot_coordinate_plot.savefig(graph_folder_path + 'shot_coordinate_plot.png')
+
+
+
+
+
+
 
