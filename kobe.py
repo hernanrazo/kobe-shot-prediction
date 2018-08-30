@@ -103,11 +103,7 @@ categorical_data = ['action_type', 'combined_shot_type', 'period', 'season',
 'shot_type', 'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'game_year',
 'game_date', 'opponent']
 
-for i in categorical_data:
-	dummie_data = pd.get_dummies(df[i])
-	dummie_data = dummie_data.add_prefix('()#'.format(i))
-	df.drop(i, axis = 1, inplace = True)
-	df = df.join(dummie_data)
+
 
 
 print(df.to_string())
