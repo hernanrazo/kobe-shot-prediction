@@ -17,8 +17,8 @@ print(' ')
 
 #remove the obviously useless variables
 df = df.drop(['game_id'], axis = 1)
-df = df.drop(['lat'], axis = 1)
-df = df.drop(['lon'], axis = 1)
+#df = df.drop(['lat'], axis = 1)
+#df = df.drop(['lon'], axis = 1)
 df = df.drop(['team_name'], axis = 1)
 df = df.drop(['matchup'], axis = 1)
 df = df.drop(['shot_id'], axis = 1)
@@ -85,8 +85,8 @@ df['shot_zone_range'] = df['shot_zone_range'].map(shot_zone_range_key).astype(in
 df['total_sec_left'] = df['minutes_remaining'] * 60 + df['seconds_remaining'] 
 
 #drop the original variables
-df.drop(['minutes_remaining'], axis = 1)
-df.drop(['seconds_remaining'], axis = 1)
+#df.drop(['minutes_remaining'], axis = 1)
+#df.drop(['seconds_remaining'], axis = 1)
 
 #convert the game_date variable into a dateframe and then seperate it into 
 #2 new variables of year and month
@@ -99,17 +99,50 @@ df = df.drop(['game_date'], axis = 1)
 
 #start visualizing data
 
+#make simple plots of shot coordinates
+shot_coordinate_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
+plt.title('Shot x & y')
+sns.regplot(x = 'loc_x', y ='loc_y', data = df)
+shot_coordinate_plot.savefig(graph_folder_path + 'shot_coordinate_plot.png')
+
+shot_lat_lon_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
+plt.title('Shot Lan & Lon')
+sns.regplot(x = 'lat', y = 'lon', data = df)
+shot_lat_lon_plot.savefig(graph_folder_path + 'shot_lat_lon_plot.png')
+
+#print scatter plots of shots made relative to how many seconds and minutes
+#were left in the game
+shots_sec_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
+plt.title('Shots When Seconds Remain')
+plt.scatter(df.loc_x, df.loc_y, alpha = 0.7, c = df.seconds_remaining,
+	cmap = 'Greens_r')
+
+plt.savefig(graph_folder_path + 'shots_sec_plot.png')
+
+shots_min_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
+plt.title('Shots when minutes Remain')
+plt.scatter(df.loc_x, df.loc_y, alpha = 0.7, c = df.minutes_remaining,
+	cmap = 'Greens_r')
+plt.savefig(graph_folder_path + 'shots_min_plot.png')
+
 #print a countplot for each category in the action_type variable
 action_type_countplot = plt.figure()
 plt.title('Occurance of Each Action Type')
 sns.countplot(x = 'action_type', data = df)
-action_type_countplot.savefig(graph_folder_path + 'action_type_barplot.png')
+action_type_countplot.savefig(graph_folder_path + 'action_type_countplot.png')
 
-#ignore this============================
-shot_coordinate_plot = plt.figure()
-plt.title('Shot Plot')
-sns.scatter(x = 'loc_x', y ='loc_y')
-shot_coordinate_plot.savefig(graph_folder_path + 'shot_coordinate_plot.png')
+#print countplot for the combined_shot variable
+combined_shot_plot = plt.figure()
+plt.title('Occurance of Each Combined Shot')
+sns.countplot(x = 'combined_shot_type', data = df)
+combined_shot_plot.savefig(graph_folder_path + 'combined_shot_plot.png')
+
+#print counterplot for the shot_zone_area variable
+shot_zone_area_plot = plt.figure()
+plt.title('Shot Occurance on each Court Side')
+sns.countplot(x = 'shot_zone_area', data = df)
+shot_zone_area_plot.savefig(graph_folder_path + 'shot_zone_area_plot.png')
+
 
 
 
