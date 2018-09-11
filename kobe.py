@@ -17,11 +17,10 @@ print(' ')
 
 #remove the obviously useless variables
 df = df.drop(['game_id'], axis = 1)
-#df = df.drop(['lat'], axis = 1)
-#df = df.drop(['lon'], axis = 1)
 df = df.drop(['team_name'], axis = 1)
 df = df.drop(['matchup'], axis = 1)
 df = df.drop(['shot_id'], axis = 1)
+df = df.drop(['playoffs'], axis = 1)
 
 #make frequency table of all action types
 print(df.groupby('action_type').size())
@@ -77,7 +76,6 @@ shot_zone_range_key = {'16-24 ft.':0, '24+ ft.':1, '8-16 ft.':2, 'Back Court Sho
 'Less Than 8 ft.':4}
 
 df['shot_zone_range'] = df['shot_zone_range'].map(shot_zone_range_key).astype(int)
-
 
 
 #combine the seconds_remaining and minutes_remaining variables by converting minutes
@@ -143,7 +141,13 @@ plt.title('Shot Occurance on each Court Side')
 sns.countplot(x = 'shot_zone_area', data = df)
 shot_zone_area_plot.savefig(graph_folder_path + 'shot_zone_area_plot.png')
 
+print(list(df))
 
+#split dtat into a training section and a testing section
+#train_df, test_df = train_test_split(df, test_size = 0.3)
+
+
+#['action_type', 'combined_shot_type', 'game_event_id', 'lat', 'loc_x', 'loc_y', 'lon', 'minutes_remaining', 'period', 'season', 'seconds_remaining', 'shot_distance', 'shot_made_flag', 'shot_type', 'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'team_id', 'opponent', 'total_sec_left', 'game_year', 'game_month']
 
 
 
