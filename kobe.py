@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 import seaborn as sns
 
 #load data onto a dataframe
@@ -144,10 +145,30 @@ shot_zone_area_plot.savefig(graph_folder_path + 'shot_zone_area_plot.png')
 print(list(df))
 
 #split dtat into a training section and a testing section
-#train_df, test_df = train_test_split(df, test_size = 0.3)
+train_df, test_df = train_test_split(df, test_size = 0.3)
+
+#take data features and output for training and testing
+train_x = train_df['action_type', 'combined_shot_type', 'game_event_id', 'lat', 'loc_x', 'loc_y', 
+'lon', 'minutes_remaining', 'period', 'season', 'seconds_remaining', 'shot_distance', 'shot_type', 
+'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'team_id', 'opponent', 'total_sec_left', 
+'game_year', 'game_month']
+
+train_y = train_df['shot_made_flag']
+
+test_x = test_df['action_type', 'combined_shot_type', 'game_event_id', 'lat', 'loc_x', 'loc_y', 
+'lon', 'minutes_remaining', 'period', 'season', 'seconds_remaining', 'shot_distance', 'shot_type', 
+'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'team_id', 'opponent', 'total_sec_left', 
+'game_year', 'game_month']
+
+test_y = test_df['shot_made_flag']
+
+#double check everything came out correctly
+print(train_df.head)
+print(' ')
+print(test_df.head)
+print(' ')
 
 
-#['action_type', 'combined_shot_type', 'game_event_id', 'lat', 'loc_x', 'loc_y', 'lon', 'minutes_remaining', 'period', 'season', 'seconds_remaining', 'shot_distance', 'shot_made_flag', 'shot_type', 'shot_zone_area', 'shot_zone_basic', 'shot_zone_range', 'team_id', 'opponent', 'total_sec_left', 'game_year', 'game_month']
 
 
 
