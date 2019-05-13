@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 import seaborn as sns
+import matplotlib.pyplot as plt
 
 #load data onto a dataframe
 df = pd.read_csv('/Users/hernanrazo/pythonProjects/kobe-shot-prediction/data.csv')
@@ -11,12 +11,14 @@ df = pd.read_csv('/Users/hernanrazo/pythonProjects/kobe-shot-prediction/data.csv
 graph_folder_path = '/Users/hernanrazo/pythonProjects/kobe-shot-prediction/graphs/'
 
 #check for empty values
+print("Checking for emtpy values")
 print(df.apply(lambda x: sum(x.isnull()), axis = 0))
 print(' ')
 
 #start off by cleaning the data 
 
 #remove the obviously useless variables
+print("Getting rid of useless variables")
 df = df.drop(['game_id'], axis = 1)
 df = df.drop(['team_name'], axis = 1)
 df = df.drop(['matchup'], axis = 1)
@@ -24,14 +26,17 @@ df = df.drop(['shot_id'], axis = 1)
 df = df.drop(['playoffs'], axis = 1)
 
 #make frequency table of all action types
+print("Frequency table of all action types")
 print(df.groupby('action_type').size())
 print(' ')
 
 #take the 20 least popular action types and combine them into one category called 'Other'
+print("Making 'other' category")
 rare_action_types = df['action_type'].value_counts().sort_values().index.values[:20]
 df.loc[df['action_type'].isin(rare_action_types), 'action_type'] = 'Other'
 
 #turn action_type into a numerical variable by assigning each action a number
+print("Turning action_type into numeric")
 action_type_key = {'Alley Oop Dunk Shot':0, 'Alley Oop Layup shot':2,
 'Driving Dunk Shot':3, 'Driving Finger Roll Layup Shot':4, 
 'Driving Finger Roll Shot':5, 'Driving Jump shot':6, 'Driving Layup Shot':7,
@@ -97,6 +102,7 @@ df['game_month'] = df['game_date'].dt.month
 df = df.drop(['game_date'], axis = 1)
 
 #start visualizing data
+print("Starting to visualize data")
 
 #make simple plots of shot coordinates
 shot_coordinate_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
@@ -104,6 +110,8 @@ plt.title('Shot x & y')
 sns.regplot(x = 'loc_x', y ='loc_y', data = df)
 shot_coordinate_plot.savefig(graph_folder_path + 'shot_coordinate_plot.png')
 
+
+print("Did it work?")
 shot_lat_lon_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
 plt.title('Shot Lan & Lon')
 sns.regplot(x = 'lat', y = 'lon', data = df)
@@ -113,15 +121,13 @@ shot_lat_lon_plot.savefig(graph_folder_path + 'shot_lat_lon_plot.png')
 #were left in the game
 shots_sec_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
 plt.title('Shots When Seconds Remain')
-plt.scatter(df.loc_x, df.loc_y, alpha = 0.7, c = df.seconds_remaining,
-	cmap = 'Greens_r')
+plt.scatter(df.loc_x, df.loc_y, alpha = 0.7, c = df.seconds_remaining, cmap = 'Greens_r')
 
 plt.savefig(graph_folder_path + 'shots_sec_plot.png')
 
 shots_min_plot = plt.figure(figsize = (7, 7*(84.0/50.0)))
 plt.title('Shots when minutes Remain')
-plt.scatter(df.loc_x, df.loc_y, alpha = 0.7, c = df.minutes_remaining,
-	cmap = 'Greens_r')
+plt.scatter(df.loc_x, df.loc_y, alpha = 0.7, c = df.minutes_remaining, cmap = 'Greens_r')
 plt.savefig(graph_folder_path + 'shots_min_plot.png')
 
 #print a countplot for each category in the action_type variable
